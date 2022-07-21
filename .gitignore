@@ -11,3 +11,5 @@ Builds/*/*
 
 
 
+/out/build/x64-Debug
+/.vs
