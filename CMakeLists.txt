@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.5.0)
-if (NOT DEFINED GUI_BASE_DIR)
-	if (DEFINED ENV{GUI_BASE_DIR})
-		set(GUI_BASE_DIR $ENV{GUI_BASE_DIR})
-	else()
-		set(GUI_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin-GUI)
-	endif()
-endif()
+
+# if (NOT DEFINED GUI_BASE_DIR)
+#	if (DEFINED ENV{GUI_BASE_DIR})
+#		set(GUI_BASE_DIR $ENV{GUI_BASE_DIR})
+#	else()
+#		set(GUI_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../plugin-GUI)
+#	endif()
+#endif()
 
 set(GUI_BASE_DIR C:\\Users\\anton\\source\\Repos\\plugin-GUI)
 
