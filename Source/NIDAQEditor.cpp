@@ -39,7 +39,7 @@ void EditorBackground::paint(Graphics& g)
 
 		float aiChanOffsetX = 15; //pixels
 		float aiChanOffsetY = 12; //pixels
-		float aiChanWidth = 70;   //pixels
+		float aiChanWidth = 45;   //pixels
 		float aiChanHeight = 22;  //pixels TODO: normalize
 		float paddingX = 1.07;
 		float paddingY = 1.18;
@@ -73,7 +73,7 @@ void EditorBackground::paint(Graphics& g)
 
 			g.setFont(10);
 			g.drawText(
-				String("AI") + String(i),
+				String("Ch") + String(i),
 				5 + aiChanOffsetX + paddingX * colIndex * aiChanWidth,
 				7 + aiChanOffsetY + paddingY * rowIndex * aiChanHeight,
 				20, 10, Justification::centredLeft);
@@ -126,8 +126,15 @@ void EditorBackground::paint(Graphics& g)
 		float settingsOffsetX = diChanOffsetX + ((nDI % maxChannelsPerColumn == 0 ? 0 : 1) + nDI / diChannelsPerColumn) * paddingX * diChanWidth + 5;
 		g.setColour(Colours::darkgrey);
 		g.setFont(10);
-		g.drawText(String("SAMPLE RATE"), settingsOffsetX, 13, 100, 10, Justification::centredLeft);
-		g.drawText(String("AI VOLTAGE RANGE"), settingsOffsetX, 45, 100, 10, Justification::centredLeft);
+		g.drawText(String("Sample Rate"), settingsOffsetX, 13, 100, 10, Justification::centredLeft);
+		g.drawText(String("DC Gain"), settingsOffsetX, 45, 100, 10, Justification::centredLeft);
+		g.drawText(String("AC Gain"), settingsOffsetX, 79, 100, 10, Justification::centredLeft);
+
+		settingsOffsetX += 85;
+		g.drawText(String("Vgs"), settingsOffsetX, 13, 100, 10, Justification::centredLeft);
+
+		settingsOffsetX += 70;
+		g.drawText(String("Vds"), settingsOffsetX, 13, 100, 10, Justification::centredLeft);
 
 		/*
 		g.drawText(String("USAGE"), settingsOffsetX, 77, 100, 10, Justification::centredLeft);
@@ -276,43 +283,43 @@ void DIButton::timerCallback()
 
 }
 
-SourceTypeButton::SourceTypeButton(int id_, NIDAQThread* thread_, SOURCE_TYPE source) : id(id_), thread(thread_)
-{
-
-	update(source);
-
-}
-
-void SourceTypeButton::setId(int id_)
-{
-	id = id_;
-}
-
-int SourceTypeButton::getId()
-{
-	return id;
-}
-
-void SourceTypeButton::update(SOURCE_TYPE sourceType)
-{
-	switch (sourceType) {
-	case SOURCE_TYPE::RSE:
-		setButtonText("RSE"); return;
-	case SOURCE_TYPE::NRSE:
-		setButtonText("NRSE"); return;
-	case SOURCE_TYPE::DIFF:
-		setButtonText("DIFF"); return;
-	case SOURCE_TYPE::PSEUDO_DIFF:
-		setButtonText("PDIF"); return;
-	default:
-		break;
-	}
-}
-
-void SourceTypeButton::timerCallback()
-{
-
-}
+//SourceTypeButton::SourceTypeButton(int id_, NIDAQThread* thread_, SOURCE_TYPE source) : id(id_), thread(thread_)
+//{
+//
+//	update(source);
+//
+//}
+//
+//void SourceTypeButton::setId(int id_)
+//{
+//	id = id_;
+//}
+//
+//int SourceTypeButton::getId()
+//{
+//	return id;
+//}
+//
+//void SourceTypeButton::update(SOURCE_TYPE sourceType)
+//{
+//	switch (sourceType) {
+//	case SOURCE_TYPE::RSE:
+//		setButtonText("RSE"); return;
+//	case SOURCE_TYPE::NRSE:
+//		setButtonText("NRSE"); return;
+//	case SOURCE_TYPE::DIFF:
+//		setButtonText("DIFF"); return;
+//	case SOURCE_TYPE::PSEUDO_DIFF:
+//		setButtonText("PDIF"); return;
+//	default:
+//		break;
+//	}
+//}
+//
+//void SourceTypeButton::timerCallback()
+//{
+//
+//}
 
 BackgroundLoader::BackgroundLoader(NIDAQThread* thread, NIDAQEditor* editor)
 	: Thread("NIDAQ Loader"), t(thread), e(editor)
@@ -357,30 +364,31 @@ void NIDAQEditor::draw()
 	int diChannelsPerColumn = nDI > 0 && nDI < maxChannelsPerColumn ? nDI : maxChannelsPerColumn;
 
 	aiButtons.clear();
-	sourceTypeButtons.clear();
+	//sourceTypeButtons.clear();
 
 	for (int i = 0; i < nAI; i++)
 	{
 
 		int colIndex = i / aiChannelsPerColumn;
 		int rowIndex = i % aiChannelsPerColumn + 1;
-		int xOffset = colIndex * 75 + 40;
+		int xOffset = colIndex * 48 + 40;
 		int y_pos = 5 + rowIndex * 26;
 
 		AIButton* a = new AIButton(i, thread);
 		a->setBounds(xOffset, y_pos, 15, 15);
 		a->addListener(this);
+		a->setEnabled(true);
 		addAndMakeVisible(a);
 		aiButtons.add(a);
 
-		SOURCE_TYPE sourceType = thread->getSourceTypeForInput(i);
-		printf("Got source type for input %d: %d\n", i, sourceType);
+		//SOURCE_TYPE sourceType = thread->getSourceTypeForInput(i);
+		//printf("Got source type for input %d: %d\n", i, sourceType);
 
-		SourceTypeButton* b = new SourceTypeButton(i, thread, sourceType);
-		b->setBounds(xOffset+18, y_pos-2, 26, 17);
-		b->addListener(this);
-		addAndMakeVisible(b);
-		sourceTypeButtons.add(b);
+		//SourceTypeButton* b = new SourceTypeButton(i, thread, sourceType);
+		//b->setBounds(xOffset+18, y_pos-2, 26, 17);
+		//b->addListener(this);
+		//addAndMakeVisible(b);
+		//sourceTypeButtons.add(b);
 
 	}
 
@@ -392,12 +400,13 @@ void NIDAQEditor::draw()
 
 		int colIndex = i / diChannelsPerColumn;
 		int rowIndex = i % diChannelsPerColumn + 1;
-		xOffset = ((nAI % maxChannelsPerColumn == 0 ? 0 : 1) + nAI / aiChannelsPerColumn) * 75 + 38 + colIndex * 45;
+		xOffset = ((nAI % maxChannelsPerColumn == 0 ? 0 : 1) + nAI / aiChannelsPerColumn) * 48 + 38 + colIndex * 45;
 		int y_pos = 5 + rowIndex * 26;
 
 		DIButton* b = new DIButton(i, thread);
 		b->setBounds(xOffset, y_pos, 15, 15);
 		b->addListener(this);
+		b->setEnabled(false);
 		addAndMakeVisible(b);
 		diButtons.add(b);
 
@@ -405,8 +414,9 @@ void NIDAQEditor::draw()
 
 	xOffset = xOffset + 25;
 
+	// Sampling rate selection
 	sampleRateSelectBox = new ComboBox("SampleRateSelectBox");
-	sampleRateSelectBox->setBounds(xOffset, 39, 85, 20);
+	sampleRateSelectBox->setBounds(xOffset, 38, 85, 20);
 	Array<String> sampleRates = t->getSampleRates();
 	for (int i = 0; i < sampleRates.size(); i++)
 	{
@@ -416,16 +426,59 @@ void NIDAQEditor::draw()
 	sampleRateSelectBox->addListener(this);
 	addAndMakeVisible(sampleRateSelectBox);
 
-	voltageRangeSelectBox = new ComboBox("VoltageRangeSelectBox");
-	voltageRangeSelectBox->setBounds(xOffset, 70, 85, 20);
-	Array<String> voltageRanges = t->getVoltageRanges();
-	for (int i = 0; i < voltageRanges.size(); i++)
+	// DC gain selection
+	DCGainSelectBox = new ComboBox("DCGainSelectBox");
+	DCGainSelectBox->setBounds(xOffset, 73, 85, 20);
+	Array<String> DCGains = t->getDCGains();
+	for (int i = 0; i < DCGains.size(); i++)
 	{
-		voltageRangeSelectBox->addItem(voltageRanges[i], i + 1);
+		DCGainSelectBox->addItem(DCGains[i], i + 1);
 	}
-	voltageRangeSelectBox->setSelectedItemIndex(t->getVoltageRangeIndex(), false);
-	voltageRangeSelectBox->addListener(this);
-	addAndMakeVisible(voltageRangeSelectBox);
+	DCGainSelectBox->setSelectedItemIndex(t->getACGainIndex(), false);
+	DCGainSelectBox->addListener(this);
+	addAndMakeVisible(DCGainSelectBox);
+
+	// AC Gain Selection
+	ACGainSelectBox = new ComboBox("ACGainSelectBox");
+	ACGainSelectBox->setBounds(xOffset, 105, 85, 20);
+	Array<String> ACGains = t->getDCGains();
+	for (int i = 0; i < ACGains.size(); i++)
+	{
+		ACGainSelectBox->addItem(DCGains[i], i + 1);
+	}
+	ACGainSelectBox->setSelectedItemIndex(t->getACGainIndex(), false);
+	ACGainSelectBox->addListener(this);
+	addAndMakeVisible(ACGainSelectBox);
+
+	xOffset = xOffset + 90;
+	VgsSlider = new juce::Slider("VgsSlider");
+	VgsSlider->setSliderStyle(juce::Slider::LinearVertical);
+	VgsSlider->setTextBoxStyle(juce::Slider::TextBoxAbove, false, 50, 20);
+	VgsSlider->setBounds(xOffset, 40, 40, 90);
+	VgsSlider->setValue(0.1);
+	VgsSlider->setRange(-0.7, 0.7, 0.001);
+	VgsSlider->addListener(this);
+	addAndMakeVisible(VgsSlider);
+
+	xOffset = xOffset + 45;
+	VdsSlider = new juce::Slider("VdsSlider");
+	VdsSlider->setSliderStyle(juce::Slider::LinearVertical);
+	VdsSlider->setTextBoxStyle(juce::Slider::TextBoxAbove, false, 50, 20);
+	VdsSlider->setBounds(xOffset, 40, 40, 90);
+	VdsSlider->setValue(0.05);
+	VdsSlider->setRange(0.01, 0.2, 0.001);
+	addAndMakeVisible(VdsSlider);
+
+	//voltageRangeSelectBox = new ComboBox("VoltageRangeSelectBox");
+	//voltageRangeSelectBox->setBounds(xOffset, 70, 85, 20);
+	//Array<String> voltageRanges = t->getVoltageRanges();
+	//for (int i = 0; i < voltageRanges.size(); i++)
+	//{
+	//	voltageRangeSelectBox->addItem(voltageRanges[i], i + 1);
+	//}
+	//voltageRangeSelectBox->setSelectedItemIndex(t->getVoltageRangeIndex(), false);
+	//voltageRangeSelectBox->addListener(this);
+	//addAndMakeVisible(voltageRangeSelectBox);
 
 	fifoMonitor = new FifoMonitor(thread);
 	fifoMonitor->setBounds(xOffset + 2, 105, 70, 12);
@@ -452,6 +505,20 @@ void NIDAQEditor::draw()
 
 }
 
+void NIDAQEditor::sliderValueChanged(juce::Slider* slider)
+{
+	if (slider == VgsSlider)
+	{
+		thread->setVgs(VgsSlider->getValue());
+	} 
+
+	if (slider == VdsSlider)
+	{
+		thread->setVds(VdsSlider->getValue());
+	}
+
+}
+
 NIDAQEditor::~NIDAQEditor()
 {
 
@@ -472,18 +539,18 @@ void NIDAQEditor::comboBoxChanged(ComboBox* comboBox)
 			comboBox->setSelectedItemIndex(thread->getSampleRateIndex());
 		}
 	}
-	else // (comboBox == voltageRangeSelectBox)
-	{
-		if (!thread->isThreadRunning())
-		{
-			thread->setVoltageRange(comboBox->getSelectedId() - 1);
-			CoreServices::updateSignalChain(this);
-		}
-		else
-		{
-			comboBox->setSelectedItemIndex(thread->getVoltageRangeIndex());
-		}
-	}
+	//else // (comboBox == voltageRangeSelectBox)
+	//{
+	//	if (!thread->isThreadRunning())
+	//	{
+	//		//thread->setVoltageRange(comboBox->getSelectedId() - 1);
+	//		CoreServices::updateSignalChain(this);
+	//	}
+	//	else
+	//	{
+	//		comboBox->setSelectedItemIndex(thread->getVoltageRangeIndex());
+	//	}
+	//}
 
 } 
 
@@ -502,11 +569,11 @@ void NIDAQEditor::buttonEvent(Button* button)
 		thread->toggleDIChannel(((DIButton*)button)->getId());
 		repaint();
 	}
-	else if (sourceTypeButtons.contains((SourceTypeButton*)button))
-	{
-		thread->toggleSourceType(((SourceTypeButton*)button)->getId());
-		((SourceTypeButton*)button)->update(thread->getSourceTypeForInput(((SourceTypeButton*)button)->getId()));
-	}
+	//else if (sourceTypeButtons.contains((SourceTypeButton*)button))
+	//{
+	//	thread->toggleSourceType(((SourceTypeButton*)button)->getId());
+	//	((SourceTypeButton*)button)->update(thread->getSourceTypeForInput(((SourceTypeButton*)button)->getId()));
+	//}
 	else if (button == swapDeviceButton)
 	{
 		if (!thread->isThreadRunning())

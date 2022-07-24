@@ -149,6 +149,12 @@ private:
 
 	Array<float>		sampleRates;
 	float				samplerate;
+	Array<float>		DCGains;
+	float				DCGain;
+	Array<float>		ACGains;
+	float				ACGain;
+	double				Vds;
+	double				Vgs;
 
 	Array<AnalogIn> 	ai;
 	Array<NIDAQ::int32> terminalConfig;

@@ -80,10 +80,14 @@ public:
 	int getNumAnalogInputs() const;
 	int getNumDigitalInputs() const;
 
-	Array<String> getVoltageRanges();
-	int getVoltageRangeIndex();
+	//Array<String> getVoltageRanges();
+	//int getVoltageRangeIndex();
 
 	Array<String> getSampleRates();
+	Array<String> getACGains();
+	int getACGainIndex();
+	Array<String> getDCGains();
+	int getDCGainIndex();
 	int getSampleRateIndex();
 
 	void toggleAIChannel(int channelIndex);
@@ -107,13 +111,21 @@ public:
 	int getNumTTLOutputs(int subProcessorIdx) const override;
 
 	/** Sets the voltage range of the data source. */
-	void setVoltageRange(int rangeIndex);
+	//void setVoltageRange(int rangeIndex);
 
 	/** Sets the sample rate of the data source. */
 	void setSampleRate(int rateIndex);
 
 	/** Returns the sample rate of the data source.*/
 	float getSampleRate(int subProcessorIdx) const override;
+
+	void setDCGain(int DCgIndex);	
+
+	void setACGain(int ACgIndex);
+
+	void setVgs(double Vgs);
+
+	void setVds(double Vds);
 
 	/** Returns the volts per bit of the data source.*/
 	float getBitVolts(const DataChannel* chan) const override;
@@ -182,7 +194,11 @@ private:
 
 	/* Selectable device properties */
 	int sampleRateIndex;
-	int voltageRangeIndex;
+	//int voltageRangeIndex;
+	int DCGainIndex;
+	int ACGainIndex;
+	double Vgs;
+	double Vds;
 
 	bool isRecording;
 

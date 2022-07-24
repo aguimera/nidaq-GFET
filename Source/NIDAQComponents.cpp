@@ -130,6 +130,11 @@ NIDAQmx::NIDAQmx(const char* deviceName)
 		30000.0f
 	};
 
+	DCGains.add(10e3f);
+	ACGains.add(1e5f);
+	DCGain = DCGains[1];
+	ACGain = ACGains[1];
+
 	int idx = 0;
 	while (sample_rates[idx] <= sampleRateRange.smaxm && idx < NUM_SAMPLE_RATES)
 		sampleRates.add(sample_rates[idx++]); 
@@ -138,14 +143,14 @@ NIDAQmx::NIDAQmx(const char* deviceName)
 	samplerate = sampleRates[sampleRates.size() - 1];
 
 	// Default to largest voltage range
-	voltageRange = aiVRanges[aiVRanges.size() - 1];
+	//voltageRange = aiVRanges[aiVRanges.size() - 1];
 
 	// Enable all channels by default
 	for (int i = 0; i < aiChannelEnabled.size(); i++)
 		aiChannelEnabled.set(i, true);
 
 	for (int i = 0; i < diChannelEnabled.size(); i++)
-		diChannelEnabled.set(i, true);
+		diChannelEnabled.set(i, false);
 
 }
 

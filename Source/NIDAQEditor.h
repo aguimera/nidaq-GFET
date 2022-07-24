@@ -36,13 +36,13 @@ User interface for NIDAQmx devices.
 @see SourceNode
 
 */
-class SourceNode;
-
-class NIDAQEditor;
-class NIDAQCanvas;
-class NIDAQInterface;
-class Annotation;
-class ColorSelector;
+//class SourceNode;
+//
+//class NIDAQEditor;
+//class NIDAQCanvas;
+//class NIDAQInterface;
+//class Annotation;
+//class ColorSelector;
 
 class EditorBackground : public Component
 {
@@ -100,28 +100,28 @@ private:
 
 };
 
-class SourceTypeButton : public TextButton, public Timer
-{
-public:
-	SourceTypeButton(int id, NIDAQThread* thread, SOURCE_TYPE source);
-
-	void setId(int id);
-	int getId();
-	void toggleSourceType();
-	void timerCallback();
-
-	void update(SOURCE_TYPE sourceType);
-
-	NIDAQThread* thread;
-
-	friend class NIDAQEditor;
-
-private:
-
-	int id;
-	bool enabled;
-
-};
+//class sourcetypebutton : public textbutton, public timer
+//{
+//public:
+//	sourcetypebutton(int id, nidaqthread* thread, source_type source);
+//
+//	void setid(int id);
+//	int getid();
+//	void togglesourcetype();
+//	void timercallback();
+//
+//	void update(source_type sourcetype);
+//
+//	nidaqthread* thread;
+//
+//	friend class nidaqeditor;
+//
+//private:
+//
+//	int id;
+//	bool enabled;
+//
+//};
 
 class FifoMonitor : public Component, public Timer
 {
@@ -159,6 +159,8 @@ public:
 
 	void draw();
 
+	void sliderValueChanged(juce::Slider* slider);
+
 	void buttonEvent(Button* button);
 	void comboBoxChanged(ComboBox*);
 
@@ -168,11 +170,15 @@ public:
 private:
 
 	OwnedArray<AIButton> aiButtons;
-	OwnedArray<TextButton> sourceTypeButtons;
+	//OwnedArray<TextButton> sourceTypeButtons;
 	OwnedArray<DIButton> diButtons;
 
 	ScopedPointer<ComboBox> sampleRateSelectBox;
-	ScopedPointer<ComboBox> voltageRangeSelectBox;
+	ScopedPointer<ComboBox> DCGainSelectBox;
+	ScopedPointer<ComboBox> ACGainSelectBox;
+	ScopedPointer<juce::Slider> VgsSlider;
+	ScopedPointer<juce::Slider> VdsSlider;
+
 	ScopedPointer<FifoMonitor> fifoMonitor;
 
 	ScopedPointer<UtilityButton> swapDeviceButton;

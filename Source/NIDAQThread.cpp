@@ -70,8 +70,15 @@ int NIDAQThread::openConnection()
 	sampleRateIndex = mNIDAQ->sampleRates.size() - 1;
 	setSampleRate(sampleRateIndex);
 
-	voltageRangeIndex = mNIDAQ->aiVRanges.size() - 1;
-	setVoltageRange(voltageRangeIndex);
+	DCGainIndex = mNIDAQ->DCGains.size() - 1;
+	setDCGain(DCGainIndex);
+
+	ACGainIndex = mNIDAQ->ACGains.size() - 1;
+	setACGain(ACGainIndex);
+
+
+	//voltageRangeIndex = mNIDAQ->aiVRanges.size() - 1;
+	//setVoltageRange(voltageRangeIndex);
 
 	return 0;
 
@@ -122,8 +129,8 @@ int NIDAQThread::swapConnection(String productName)
 		sampleRateIndex = mNIDAQ->sampleRates.size() - 1;
 		setSampleRate(sampleRateIndex);
 
-		voltageRangeIndex = mNIDAQ->aiVRanges.size() - 1;
-		setVoltageRange(voltageRangeIndex);
+		//voltageRangeIndex = mNIDAQ->aiVRanges.size() - 1;
+		//setVoltageRange(voltageRangeIndex);
 
 		return 0;
 	}
@@ -165,11 +172,11 @@ void NIDAQThread::toggleDIChannel(int index)
 	mNIDAQ->diChannelEnabled.set(index, !mNIDAQ->diChannelEnabled[index]);
 }
 
-void NIDAQThread::setVoltageRange(int rangeIndex)
-{
-	voltageRangeIndex = rangeIndex;
-	mNIDAQ->voltageRange = mNIDAQ->aiVRanges[rangeIndex];
-}
+//void NIDAQThread::setVoltageRange(int rangeIndex)
+//{
+//	voltageRangeIndex = rangeIndex;
+//	mNIDAQ->voltageRange = mNIDAQ->aiVRanges[rangeIndex];
+//}
 
 void NIDAQThread::setSampleRate(int rateIndex)
 {
@@ -177,25 +184,57 @@ void NIDAQThread::setSampleRate(int rateIndex)
 	mNIDAQ->samplerate = mNIDAQ->sampleRates[rateIndex];
 }
 
-int NIDAQThread::getVoltageRangeIndex()
+void NIDAQThread::setDCGain(int DCgIndex)
 {
-	return voltageRangeIndex;
+	DCGainIndex = DCgIndex;
+	mNIDAQ->DCGain = mNIDAQ->DCGains[DCgIndex];
 }
+
+void NIDAQThread::setACGain(int ACgIndex)
+{
+	ACGainIndex = ACgIndex;
+	mNIDAQ->ACGain = mNIDAQ->ACGains[ACgIndex];
+}
+
+void NIDAQThread::setVgs(double Vgs)
+{
+	mNIDAQ->Vgs = Vgs;
+}
+
+void NIDAQThread::setVds(double Vds)
+{
+	mNIDAQ->Vds = Vds;
+}
+
+int NIDAQThread::getACGainIndex()
+{
+	return ACGainIndex;
+}
+
+int NIDAQThread::getDCGainIndex()
+{
+	return DCGainIndex;
+}
+//
+//int NIDAQThread::getVoltageRangeIndex()
+//{
+//	return voltageRangeIndex;
+//}
 
 int NIDAQThread::getSampleRateIndex()
 {
 	return sampleRateIndex;
 }
 
-Array<String> NIDAQThread::getVoltageRanges()
-{
-	Array<String> voltageRanges;
-	for (auto range : mNIDAQ->aiVRanges)
-	{
-		voltageRanges.add(String(range.vmin) + "-" + String(range.vmax) + " V");
-	}
-	return voltageRanges;
-}
+//Array<String> NIDAQThread::getVoltageRanges()
+//{
+//	Array<String> voltageRanges;
+//	for (auto range : mNIDAQ->aiVRanges)
+//	{
+//		voltageRanges.add(String(range.vmin) + "-" + String(range.vmax) + " V");
+//	}
+//	return voltageRanges;
+//}
 
 Array<String> NIDAQThread::getSampleRates()
 {
@@ -205,6 +244,26 @@ Array<String> NIDAQThread::getSampleRates()
 		sampleRates.add(String(rate) + " S/s");
 	}
 	return sampleRates;
+}
+
+Array<String> NIDAQThread::getACGains()
+{
+	Array<String> ACGains;
+	for (auto rate : mNIDAQ->ACGains)
+	{
+		ACGains.add(String(rate));
+	}
+	return ACGains;
+}
+
+Array<String> NIDAQThread::getDCGains()
+{
+	Array<String> DCGains;
+	for (auto rate : mNIDAQ->DCGains)
+	{
+		DCGains.add(String(rate));
+	}
+	return DCGains;
 }
 
 bool NIDAQThread::foundInputSource()
